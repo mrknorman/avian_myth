@@ -310,10 +310,14 @@ pub fn position_to_transform(
 #[cfg(feature = "3d")]
 pub fn position_to_transform(
     mut query: Query<PosToTransformComponents, PosToTransformFilter>,
-    parents: Query<ParentComponents, With<Children>>,
+    _parents: Query<ParentComponents, With<Children>>,
 ) {
-    for (mut transform, pos, rot, parent) in &mut query {
-        if let Some(&ChildOf(parent)) = parent {
+    for (mut transform, pos, rot, _parent) in &mut query {
+
+        transform.translation = pos.f32();
+        transform.rotation = rot.f32();
+
+        /*  Fails with big space, for now skipping
             if let Ok((parent_transform, parent_pos, parent_rot)) = parents.get(parent) {
                 // Compute the global transform of the parent using its Position and Rotation
                 let parent_transform = parent_transform.compute_transform();
@@ -326,6 +330,7 @@ pub fn position_to_transform(
 
                 // The new local transform of the child body,
                 // computed from the its global transform and its parents global transform
+              
                 let new_transform = GlobalTransform::from(
                     Transform::from_translation(pos.f32()).with_rotation(rot.f32()),
                 )
@@ -338,6 +343,7 @@ pub fn position_to_transform(
             transform.translation = pos.f32();
             transform.rotation = rot.f32();
         }
+        */
     }
 }
 
